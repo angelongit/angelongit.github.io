@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VaultLink, a keypad lock box in ARM assembly | Angel Lopez</title>
+  <meta name="description" content="VaultLink is a Wi-Fi connected, multi-user keypad lock box on an STM32F401RE, written entirely in ARM assembly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Angel Lopez</a>
+      <nav class="site-nav" aria-label="Main">
+        <a class="nav-link" href="index.html#projects">Projects</a>
+        <a class="nav-link" href="index.html#skills">Skills</a>
+        <a class="nav-link" href="index.html#background">Background</a>
+        <a class="nav-link" href="index.html#contact">Contact</a>
+        <a class="btn btn-primary" href="Angel_Lopez_Resume.pdf">Resume</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="page-head">
+        <a class="back" href="index.html#projects">Back to all projects</a>
+        <h1>VaultLink</h1>
+        <p class="lede">A Wi-Fi connected, multi-user keypad lock box on an STM32F401RE, written entirely in ARM assembly.</p>
+        <span class="status wip">In progress, demo the week of November 29</span>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://github.com/angelongit/VaultLink">Code on GitHub</a>
+        </div>
+      </div>
+
+      <!-- When a demo video exists, add it here:
+      <video controls preload="metadata" poster="assets/img/vaultlink-poster.jpg" style="width:100%;border-radius:10px">
+        <source src="assets/video/vaultlink-demo.mp4" type="video/mp4">
+      </video>
+      -->
+
+      <div class="doc">
+        <section>
+          <h2>At a glance</h2>
+          <table class="spec">
+            <tr><th scope="row">Type</th><td>Final project for ESET 349, Microcontroller Architecture, at Texas A&amp;M. Team of 2, fall 2026.</td></tr>
+            <tr><th scope="row">Controller</th><td>STM32F401RE Nucleo-64</td></tr>
+            <tr><th scope="row">Language</th><td>ARM assembly only, a course rule</td></tr>
+            <tr><th scope="row">Toolchain</th><td>Keil uVision 5 with an ST-Link debugger</td></tr>
+            <tr><th scope="row">Peripherals</th><td>4x4 membrane keypad, 16x2 character LCD, SG90 servo latch, piezo buzzer, status LEDs, magnetic reed switch on the lid, ESP-01 Wi-Fi module</td></tr>
+          </table>
+        </section>
+
+        <section>
+          <h2>What it does</h2>
+          <ul>
+            <li>Each of up to 8 users has a 4 to 6 digit PIN, stored as a hash instead of the digits.</li>
+            <li>A correct PIN moves a servo that releases the latch. The box locks itself again when the lid closes.</li>
+            <li>Three wrong PINs lock the keypad out for 30 seconds, then 60, then 120.</li>
+            <li>Opening the lid while the box is locked sets off an alarm.</li>
+            <li>An admin user can add or remove users and view an access log from the keypad.</li>
+            <li>Over Wi-Fi, the owner's phone gets a notification for every unlock, lockout or tamper alarm, and can unlock the box remotely.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Design</h2>
+          <p>One STM32 runs the whole lock. The Wi-Fi module sits on a single serial port, so removing it leaves the lock working. We build the offline lock first and add Wi-Fi on top.</p>
+          <figure class="framed">
+            <img src="assets/img/vaultlink-block-diagram.png" width="1310" height="826" alt="Block diagram: a 4x4 keypad and a lid reed switch feed the STM32F401RE. The STM32 drives the LCD, servo latch, buzzer and red and green LEDs. An ESP-01 Wi-Fi module connects over USART1 and reaches phones over Wi-Fi.">
+            <figcaption>Hardware block diagram from the project plan. Dashed boxes are the Wi-Fi layer.</figcaption>
+          </figure>
+
+          <h3>Lock controller</h3>
+          <p>The lock is a state machine. The first two wrong PINs send the user back to try again and the third starts a lockout. A valid PIN silences the alarm.</p>
+          <figure class="framed">
+            <img src="assets/img/vaultlink-state-machine.png" width="1305" height="660" alt="State machine: Locked leads to Entering PIN on a key press, then to a PIN check. A valid PIN leads to Unlocked, which returns to Locked when the lid closes or after 10 seconds. A wrong PIN leads to Denied, and a third failure to Lockout for 30, 60 or 120 seconds. A forced lid leads to Alarm. An admin key in Unlocked opens the Admin menu.">
+            <figcaption>Lock state machine from the project plan.</figcaption>
+          </figure>
+
+          <h3>Software choices</h3>
+          <ul>
+            <li><strong>No waiting in delay loops.</strong> A 1 ms SysTick interrupt keeps a millisecond counter that every timeout reads, so the keypad stays responsive while timers, the alarm and Wi-Fi run.</li>
+            <li><strong>Hashed PINs.</strong> Each PIN is stored as a 32-bit FNV-1a hash, which costs one XOR and one multiply per digit.</li>
+            <li><strong>Interrupt-driven lid sensor.</strong> The reed switch raises an external interrupt that flags a lid open or close for the state machine.</li>
+            <li><strong>Access log.</strong> The last 32 events are kept in a ring buffer.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Reading the keypad</h2>
+          <p>The keypad's 16 keys sit where 4 row wires cross 4 column wires, and pressing a key connects one row to one column. The columns are inputs with internal pull-ups, so they read 1 when nothing is pressed. The program drives one row low at a time and reads the columns: the row being driven gives the key's row, and the column that reads 0 gives its column.</p>
+          <p>I checked why the scan has to go one row at a time. With every row driven low, all keys in the same column look identical. In the screenshots below, holding 2 or holding 5 clears the same input bit.</p>
+          <div class="shots">
+            <figure><img src="assets/img/keil-no-key.png" width="567" height="760" alt="Keil System Viewer showing the GPIOC input register with bits 4 to 7 all set."><figcaption>No key pressed</figcaption></figure>
+            <figure><img src="assets/img/keil-key-1.png" width="577" height="760" alt="Keil System Viewer showing input bit 4 cleared."><figcaption>Holding 1 clears bit 4, column 1</figcaption></figure>
+            <figure><img src="assets/img/keil-key-2.png" width="567" height="760" alt="Keil System Viewer showing input bit 5 cleared."><figcaption>Holding 2 clears bit 5, column 2</figcaption></figure>
+            <figure><img src="assets/img/keil-key-5.png" width="558" height="760" alt="Keil System Viewer showing input bit 5 cleared."><figcaption>Holding 5 also clears bit 5</figcaption></figure>
+          </div>
+
+          <h3>Pin map for the keypad</h3>
+          <div class="table-scroll">
+            <table class="data">
+              <thead><tr><th scope="col">Keypad wire</th><th scope="col">STM32 pin</th><th scope="col">Mode</th></tr></thead>
+              <tbody>
+                <tr><td>Rows 1 to 4</td><td class="pin">PC0 to PC3</td><td>Outputs, driven low one at a time</td></tr>
+                <tr><td>Columns 1 to 4</td><td class="pin">PC4 to PC7</td><td>Inputs with pull-ups</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>Status</h2>
+          <p>As of November 16, 2026, the keypad interface is set up and verified on the board, and I am writing the lock logic. The finished lock box is due for its demo the week of November 29.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">Angel Lopez, 2026. <a href="index.html#contact">Contact</a></div>
+  </footer>
+</body>
+</html>

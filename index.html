@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Angel Lopez | Electronics and embedded systems</title>
+  <meta name="description" content="Angel Lopez is an Electronic Systems Engineering Technology student at Texas A&amp;M who builds embedded hardware and tests it against measured data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Angel Lopez</a>
+      <nav class="site-nav" aria-label="Main">
+        <a class="nav-link" href="#projects">Projects</a>
+        <a class="nav-link" href="#skills">Skills</a>
+        <a class="nav-link" href="#background">Background</a>
+        <a class="nav-link" href="#contact">Contact</a>
+        <a class="btn btn-primary" href="Angel_Lopez_Resume.pdf">Resume</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <h1>Angel Lopez</h1>
+        <p class="lede">I build embedded hardware and test it against measured data. I study Electronic Systems Engineering Technology at Texas A&amp;M.</p>
+        <p class="seeking">Looking for a full-time Summer 2027 electrical engineering internship in the Dallas-Fort Worth area.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="Angel_Lopez_Resume.pdf">Download resume</a>
+          <a class="btn" href="https://github.com/angelongit">GitHub</a>
+          <a class="btn" href="https://www.linkedin.com/in/angelflop">LinkedIn</a>
+          <a class="btn" href="#contact">Contact</a>
+        </div>
+
+        <figure class="scope">
+          <div class="scope-scroll">
+            <img src="assets/img/spot-trace.svg" width="960" height="420" alt="Two traces from a 41 second recording: gyroscope rate swinging between about minus 150 and plus 150 degrees per second, and swept angle rising and falling ten times, once per curl.">
+          </div>
+          <figcaption>A set of 10 dumbbell curls as recorded by <a href="spot.html">Spot</a>, my rep counter, at 100 samples per second. Each swing in the lower trace is one rep. This is raw data from the project repository.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="wrap">
+        <h2>Projects</h2>
+
+        <article class="project">
+          <div>
+            <span class="status wip">In progress</span>
+            <h3><a href="spot.html">Spot</a></h3>
+            <p class="kind">Equipment-mounted gym rep counter. Personal project, started October 2026.</p>
+            <p>A small motion-sensing pod that mounts on the end of a dumbbell and counts reps from how the weight moves, built because my fitness watch kept miscounting.</p>
+            <ul>
+              <li>Seeed XIAO nRF52840 Sense streaming 6-axis IMU data over I2C at 100 Hz, logged through UART to a Python tool.</li>
+              <li>Counting errors cut from 6 to 2 across 50 labeled dumbbell curls in 7 recorded sets, by adding a swept-angle check that rejects handling motion.</li>
+              <li>Every requirement has a number and a pass or fail test, scored against video.</li>
+            </ul>
+            <div class="actions">
+              <a class="btn btn-primary" href="spot.html">Read the Spot write-up</a>
+              <a class="btn" href="https://github.com/angelongit/spot">Code on GitHub</a>
+            </div>
+          </div>
+          <a class="project-figure" href="spot.html">
+            <img src="assets/img/spot-pod-concept.png" width="1280" height="900" alt="Concept sheet for the Spot pod: a hexagonal case about 34 mm across holding the XIAO board and a battery, shown from the top, the side and mounted on the end of a dumbbell.">
+          </a>
+        </article>
+
+        <article class="project flip">
+          <div>
+            <span class="status wip">In progress, demo the week of November 29</span>
+            <h3><a href="vaultlink.html">VaultLink</a></h3>
+            <p class="kind">Wi-Fi connected keypad lock box. Microcontroller Architecture course project, team of 2.</p>
+            <p>A multi-user electronic lock box on an STM32F401RE, programmed entirely in ARM assembly, that reports unlocks and tamper alarms to a phone.</p>
+            <ul>
+              <li>4x4 keypad, 16x2 LCD and a servo-driven latch around an 8-state lock controller.</li>
+              <li>8 hashed user PINs, a lockout that doubles after 3 wrong entries, and an interrupt-driven tamper alarm.</li>
+              <li>UART link to a Wi-Fi module for phone alerts, built so the lock works fully without it.</li>
+            </ul>
+            <div class="actions">
+              <a class="btn btn-primary" href="vaultlink.html">Read the VaultLink write-up</a>
+              <a class="btn" href="https://github.com/angelongit/VaultLink">Code on GitHub</a>
+            </div>
+          </div>
+          <a class="project-figure" href="vaultlink.html">
+            <img src="assets/img/vaultlink-block-diagram.png" width="1310" height="826" alt="VaultLink block diagram: a keypad and lid reed switch feed the STM32F401RE, which drives the LCD, servo latch, buzzer and status LEDs, with an ESP-01 Wi-Fi module on a serial port.">
+          </a>
+        </article>
+        <article class="project">
+          <div>
+            <span class="status ok">Completed April 2026</span>
+            <h3>PWM DC motor controller on FPGA</h3>
+            <p class="kind">Digital Electronics course project at Texas A&amp;M.</p>
+            <p>A DC motor speed controller built from flip-flops, counters and comparators, with no microcontroller, and run on an Intel DE10-Lite FPGA.</p>
+            <ul>
+              <li>7-state one-hot Moore state machine from 7 D flip-flops and gate-level logic, stepping motor speed from 0% to 90% duty cycle in 15% increments with 2 pushbuttons.</li>
+              <li>PWM generator from 74161 counters and 7485 magnitude comparators driving an external H-bridge, with a 50 to 100 kHz clock divider and a 2-digit 7-segment speed display.</li>
+              <li>State transitions verified in Quartus waveform simulation, then all 7 speeds and a 2-button full-speed override demonstrated on a DC motor.</li>
+            </ul>
+          </div>
+          <div class="project-figure">
+            <img src="assets/img/pwm-steps.svg" width="720" height="470" alt="Seven square waves, one per speed step, with the high portion of each period growing from 0 percent to 90 percent in 15 percent steps.">
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="wrap">
+        <h2>Skills</h2>
+        <table class="spec">
+          <tr><th scope="row">Electrical</th><td>Circuit analysis, circuit testing and troubleshooting, digital logic design, PWM motor control, breadboard prototyping, schematic reading</td></tr>
+          <tr><th scope="row">Lab equipment</th><td>Oscilloscope, waveform generator, digital multimeter, DC power supply, spectrum analyzer</td></tr>
+          <tr><th scope="row">Programming</th><td>C, Python, ARM assembly, VHDL, MATLAB, Arduino</td></tr>
+          <tr><th scope="row">Embedded</th><td>STM32, Nordic nRF52840, ESP32, I2C, UART, GPIO, timers, interrupts</td></tr>
+          <tr><th scope="row">Tools</th><td>Intel Quartus Prime, ModelSim, Multisim, LTspice, KiCad, Keil uVision, Git, Minitab</td></tr>
+          <tr><th scope="row">Certification</th><td>Six Sigma Yellow Belt, expected December 2026</td></tr>
+          <tr><th scope="row">Languages</th><td>English and Spanish, both fluent</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="background">
+      <div class="wrap">
+        <h2>Background</h2>
+        <div class="two">
+          <div class="entry">
+            <h3>Texas A&amp;M University</h3>
+            <p class="meta">B.S. in Electronic Systems Engineering Technology, expected December 2028</p>
+            <ul>
+              <li>GPA 3.53 out of 4.0</li>
+              <li>Coursework includes circuit analysis, analog and digital electronics, microcontroller architecture, embedded systems development in C, and Six Sigma and applied statistics.</li>
+              <li>Member of the Society of Hispanic Professional Engineers since August 2026.</li>
+            </ul>
+          </div>
+          <div class="entry">
+            <h3>H-E-B</h3>
+            <p class="meta">Personal Shopper in Burleson, TX, summers and academic breaks since August 2023</p>
+            <ul>
+              <li>Fulfilled curbside and delivery orders at an average of 170 units per hour under strict pickup deadlines, with item selection accuracy above 99%.</li>
+              <li>Ranked in the store's top 10 personal shoppers by pick rate and trained new hires on order picking.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="wrap">
+        <h2>Contact</h2>
+        <p>The best way to reach me is email. I'm based in Fort Worth, TX, and available full time in summer 2027.</p>
+        <ul class="contact-list">
+          <li><span>Email</span> <a href="mailto:angelflop24@gmail.com">angelflop24@gmail.com</a></li>
+          <li><span>LinkedIn</span> <a href="https://www.linkedin.com/in/angelflop">linkedin.com/in/angelflop</a></li>
+          <li><span>GitHub</span> <a href="https://github.com/angelongit">github.com/angelongit</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">Angel Lopez, 2026. Built as plain HTML and CSS, hosted on GitHub Pages.</div>
+  </footer>
+</body>
+</html>

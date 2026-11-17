@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spot, a gym rep counter | Angel Lopez</title>
+  <meta name="description" content="Spot is a motion-sensing pod that mounts on a dumbbell and counts reps from IMU data. Design, results so far and test plan.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Angel Lopez</a>
+      <nav class="site-nav" aria-label="Main">
+        <a class="nav-link" href="index.html#projects">Projects</a>
+        <a class="nav-link" href="index.html#skills">Skills</a>
+        <a class="nav-link" href="index.html#background">Background</a>
+        <a class="nav-link" href="index.html#contact">Contact</a>
+        <a class="btn btn-primary" href="Angel_Lopez_Resume.pdf">Resume</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="page-head">
+        <a class="back" href="index.html#projects">Back to all projects</a>
+        <h1>Spot</h1>
+        <p class="lede">A motion-sensing pod that mounts on the end of a dumbbell and counts reps from how the weight moves.</p>
+        <span class="status wip">In progress: counts dumbbell curls today</span>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://github.com/angelongit/spot">Code on GitHub</a>
+          <a class="btn" href="https://github.com/angelongit/spot/blob/main/docs/Spot_Requirements_v1.3.md">Requirements</a>
+          <a class="btn" href="https://github.com/angelongit/spot/blob/main/docs/DECISIONS.md">Decision log</a>
+        </div>
+      </div>
+
+      <!-- When a demo video exists, add it here:
+      <video controls preload="metadata" poster="assets/img/spot-poster.jpg" style="width:100%;border-radius:10px">
+        <source src="assets/video/spot-demo.mp4" type="video/mp4">
+      </video>
+      -->
+
+      <div class="doc">
+        <section>
+          <h2>At a glance</h2>
+          <table class="spec">
+            <tr><th scope="row">Type</th><td>Personal project, started October 2026</td></tr>
+            <tr><th scope="row">Board</th><td>Seeed XIAO nRF52840 Sense with an LSM6DS3 6-axis IMU (accelerometer and gyroscope)</td></tr>
+            <tr><th scope="row">Sampling</th><td>100 Hz over I2C</td></tr>
+            <tr><th scope="row">Firmware</th><td>Arduino</td></tr>
+            <tr><th scope="row">Data tools</th><td>Python scripts that save one set per CSV file over a serial link</td></tr>
+            <tr><th scope="row">Test weight</th><td>10 lb rubber-coated hex dumbbells</td></tr>
+          </table>
+        </section>
+
+        <section>
+          <h2>Why I'm building it</h2>
+          <p>I lose count of reps when I focus on the movement itself, which makes progress hard to measure. My fitness watch didn't solve it: a watch tracks the wrist and can't see the weight, so its counts were often wrong.</p>
+          <p>Spot mounts on the equipment instead. The goal for the first version is to count reps and time rest correctly against video, and more accurately than the watch. It will also measure how long each rep takes and flag partial reps and reps done with momentum.</p>
+        </section>
+
+        <section>
+          <h2>How it works today</h2>
+          <ol class="chain">
+            <li><strong>IMU</strong><span>Accelerometer and gyroscope on the board, read over I2C</span></li>
+            <li><strong>Logger firmware</strong><span>Samples on a fixed 100 Hz schedule and streams CSV</span></li>
+            <li><strong>Python capture</strong><span>Saves each set to its own named file</span></li>
+            <li><strong>Rep counter</strong><span>Counts reps and rejects motion that isn't a rep</span></li>
+          </ol>
+          <figure class="scope">
+            <div class="scope-scroll">
+              <img src="assets/img/spot-trace.svg" width="960" height="420" alt="Two traces from a 41 second recording: gyroscope rate swinging between about minus 150 and plus 150 degrees per second, and swept angle rising and falling ten times, once per curl.">
+            </div>
+            <figcaption>One set of 10 curls from the repository. The top trace is the gyroscope rate on the axis the curl rotates about. The bottom trace is that rate added up over time, which gives the angle the dumbbell has swept. Each full swing is one rep.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Results so far</h2>
+          <p>On a labeled dataset of 50 dumbbell curls across 7 recorded sets, the counter's errors dropped from 6 to 2 after I added a swept-angle check that rejects handling motion, such as picking the weight up or adjusting grip.</p>
+          <p>These numbers come from recordings I also used to tune the counter, so they show progress and are not the final score. The final score will come from sets recorded after the counter is frozen, as described below.</p>
+        </section>
+
+        <section>
+          <h2>How it will be tested</h2>
+          <p>I wrote the requirements before building the counter. Each one has a number and a way to fail.</p>
+          <ul>
+            <li><strong>Video is the reference.</strong> The true rep count is what a reviewer counts on video before looking at Spot's count.</li>
+            <li><strong>The counter is frozen first.</strong> The code and its settings are tagged in Git, and only sets recorded after the tag are scored. If the counter changes, those sets become tuning data and new ones are recorded.</li>
+            <li><strong>Pass rules are written down in advance.</strong> The main ones are in the table.</li>
+          </ul>
+          <div class="table-scroll">
+            <table class="data">
+              <thead><tr><th scope="col">What is measured</th><th scope="col">Pass rule</th><th scope="col">Test size</th></tr></thead>
+              <tbody>
+                <tr><td>Rep count</td><td>Within 1 rep of video on at least 90% of sets, and within 2 reps on every set</td><td>At least 27 sets per exercise: 3 speeds, 3 forms, 3 sets each</td></tr>
+                <tr><td>Motion that isn't a rep</td><td>0 reps counted on every recording</td><td>At least 20 recordings per exercise</td></tr>
+                <tr><td>Rest time</td><td>Within 5 seconds of video on at least 90% of rest periods</td><td>At least 20 rest periods per exercise</td></tr>
+                <tr><td>Comparison with a watch</td><td>Lower mean absolute count error than a Garmin Forerunner 165 on the same sets</td><td>The rep count sets</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>What's next</h2>
+          <ul>
+            <li>Tuning recordings for the lateral raise and chest press, the other two exercises planned for version 1.</li>
+            <li>Logging to on-board flash on battery, so a full session can be recorded with no cable.</li>
+            <li>Flags for partial reps and momentum reps.</li>
+            <li>The pod and its mount: a steel plate bonded to the dumbbell's end face, gripped by magnets in the pod.</li>
+          </ul>
+          <figure class="framed">
+            <img src="assets/img/spot-pod-concept.png" width="1280" height="900" alt="Concept sheet for the Spot pod: a hexagonal case about 34 mm across holding the XIAO board and a battery, shown from the top, the side and mounted on the end of a dumbbell.">
+            <figcaption>An early concept sketch of the pod. Dimensions are estimates and the enclosure has not been built yet.</figcaption>
+          </figure>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">Angel Lopez, 2026. <a href="index.html#contact">Contact</a></div>
+  </footer>
+</body>
+</html>

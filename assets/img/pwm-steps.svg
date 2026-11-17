@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 470" role="img" aria-label="Seven PWM waveforms with duty cycles from 0 to 90 percent in 15 percent steps" font-family="system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<rect width="720" height="470" rx="6" fill="#ffffff"/>
+<text x="24" y="32" font-size="15" font-weight="700" fill="#12202e">PWM output at each of the 7 speed steps</text>
+<text x="76" y="85" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">0%</text>
+<line x1="92" y1="94" x2="692" y2="94" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,94 692,94"/>
+<text x="76" y="139" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">15%</text>
+<line x1="92" y1="148" x2="692" y2="148" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,148 92.0,148 92.0,118 114.5,118 114.5,148 242.0,148 242.0,148 242.0,118 264.5,118 264.5,148 392.0,148 392.0,148 392.0,118 414.5,118 414.5,148 542.0,148 542.0,148 542.0,118 564.5,118 564.5,148 692.0,148"/>
+<text x="76" y="193" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">30%</text>
+<line x1="92" y1="202" x2="692" y2="202" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,202 92.0,202 92.0,172 137.0,172 137.0,202 242.0,202 242.0,202 242.0,172 287.0,172 287.0,202 392.0,202 392.0,202 392.0,172 437.0,172 437.0,202 542.0,202 542.0,202 542.0,172 587.0,172 587.0,202 692.0,202"/>
+<text x="76" y="247" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">45%</text>
+<line x1="92" y1="256" x2="692" y2="256" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,256 92.0,256 92.0,226 159.5,226 159.5,256 242.0,256 242.0,256 242.0,226 309.5,226 309.5,256 392.0,256 392.0,256 392.0,226 459.5,226 459.5,256 542.0,256 542.0,256 542.0,226 609.5,226 609.5,256 692.0,256"/>
+<text x="76" y="301" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">60%</text>
+<line x1="92" y1="310" x2="692" y2="310" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,310 92.0,310 92.0,280 182.0,280 182.0,310 242.0,310 242.0,310 242.0,280 332.0,280 332.0,310 392.0,310 392.0,310 392.0,280 482.0,280 482.0,310 542.0,310 542.0,310 542.0,280 632.0,280 632.0,310 692.0,310"/>
+<text x="76" y="355" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">75%</text>
+<line x1="92" y1="364" x2="692" y2="364" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,364 92.0,364 92.0,334 204.5,334 204.5,364 242.0,364 242.0,364 242.0,334 354.5,334 354.5,364 392.0,364 392.0,364 392.0,334 504.5,334 504.5,364 542.0,364 542.0,364 542.0,334 654.5,334 654.5,364 692.0,364"/>
+<text x="76" y="409" font-size="14" fill="#12202e" text-anchor="end" font-weight="600">90%</text>
+<line x1="92" y1="418" x2="692" y2="418" stroke="#d3dce4" stroke-width="1"/>
+<polyline fill="none" stroke="#1757a6" stroke-width="2.2" stroke-linejoin="miter" points="92,418 92.0,418 92.0,388 227.0,388 227.0,418 242.0,418 242.0,418 242.0,388 377.0,388 377.0,418 392.0,418 392.0,418 392.0,388 527.0,388 527.0,418 542.0,418 542.0,418 542.0,388 677.0,388 677.0,418 692.0,418"/>
+<text x="92" y="456" font-size="12.5" fill="#4d5d6b">Four PWM periods shown, drawn from the design values. Duty cycle is the share of each period the output is high.</text>
+</svg>
